@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model fakultas {
+  id       Int     @id @default(autoincrement()) @db.UnsignedInt
+  fakultas String? @db.VarChar(50)
+  prodi    prodi[]
+}
+
+model role {
+  id    Int     @id @default(autoincrement()) @db.UnsignedInt
+  role  String? @db.VarChar(20)
+  users users[]
+}
+
+model users {
+  id              Int                @id @default(autoincrement()) @db.UnsignedInt
+  nim             String?            @unique @db.VarChar(15)
+  username        String?            @unique @db.VarChar(30)
+  nama            String?            @db.VarChar(100)
+  password        String             @db.VarChar(50)
+  email           String             @unique @db.VarChar(100)
+  role_id         Int                @default(0)
+  no_hp           String?            @db.VarChar(30)
+  status_id       Int                @default(4)
+  prodi_id        Int                @default(0)
+  ability_id      Int                @unique @default(0)
+  instruktur_id   Int                @default(0)
+  created_at      DateTime?          @db.Timestamp(0)
+  status_akun     users_status_akun? @default(non_aktif)
+  prodi           prodi?             @relation(fields: [prodi_id], references: [id])
+  role            role               @relation(fields: [role_id], references: [id])
+  ability         ability[]
+  status          status_users       @relation(fields: [status_id], references: [id])
+  turnitin        turnitin?
+  image           images[]
+  turnitin_status users_turnitin?    @default(false)
+  update_at       DateTime?          @db.Timestamp(0)
+  id_card         Int?
+
+  @@unique([id, instruktur_id])
+  @@unique([username, email, nim])
+}
+
+model ability {
+  id      Int     @id @default(autoincrement()) @db.UnsignedInt
+  action  String? @db.VarChar(10)
+  subject String? @db.VarChar(10)
+  id_user Int     
+  users   users   @relation(fields: [id_user], references: [id])
+}
+model prodi {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  prodi       String?   @db.VarChar(255)
+  fakultas_id Int?
+  kode_prodi  Int?
+  kode_strata Int?      @unique
+  users       users[]
+  fakultas    fakultas? @relation(fields: [fakultas_id], references: [id])
+  strata      strata?   @relation(fields: [kode_strata], references: [id])
+}
+
+model status_users {
+  id     Int     @id @default(autoincrement()) @db.UnsignedInt
+  status String? @db.VarChar(20)
+  users  users[]
+}
+
+model images {
+  id             Int           @id @default(autoincrement()) @db.UnsignedInt
+  jenis_image_id Int           @unique
+  image          String?       @db.MediumText
+  users_id       Int
+  jenis          jenis_images?
+  users          users         @relation(fields: [users_id], references: [id])
+
+  @@unique([users_id, jenis_image_id])
+}
+
+model jenis_images {
+  id          Int     @id @default(autoincrement()) @db.UnsignedInt
+  jenis_image String? @db.VarChar(20)
+  images      images  @relation(fields: [id], references: [jenis_image_id])
+}
+
+model proses_turnitin {
+  id          Int      @id @default(autoincrement()) @db.UnsignedInt
+  turnitin_id Int      @unique
+  proposal    String?  @db.VarChar(10)
+  hasil       String?  @db.VarChar(10)
+  tutup       String?  @db.VarChar(10)
+  turnitin    turnitin @relation(fields: [turnitin_id], references: [id])
+}
+
+model tahap_turnitin {
+  id           Int      @id @default(autoincrement()) @db.UnsignedInt
+  jenis_proses String?  @db.VarChar(40)
+  turnitin_id  Int      @unique
+  turnitin     turnitin @relation(fields: [turnitin_id], references: [id])
+}
+
+model turnitin {
+  id                 Int              @id @default(autoincrement()) @db.UnsignedInt
+  users_id           Int              @unique
+  judul              String?          @db.Text
+  tanggal_pembayaran DateTime?        @db.Timestamp(0)
+  tgl_pendaftaran    DateTime?        @db.Timestamp(0)
+  users              users            @relation(fields: [users_id], references: [id])
+  proses             proses_turnitin?
+  tahapan            tahap_turnitin?
+  nama_bank          String?          @db.VarChar(30)
+  proposal           Int?             @db.TinyInt
+  hasil              Int?             @db.TinyInt
+  tutup              Int?             @db.TinyInt
+  files              files?
+}
+
+model files {
+  id       Int       @id @default(autoincrement()) @db.UnsignedInt
+  users_id Int       @unique
+  bab_i    String?   @db.VarChar(100)
+  bab_ii   String?   @db.VarChar(100)
+  bab_iii  String?   @db.VarChar(100)
+  bab_iv   String?   @db.VarChar(100)
+  bab_v    String?   @db.VarChar(100)
+  turnitin turnitin? @relation(fields: [users_id], references: [users_id])
+}
+
+model laporan {
+  id            Int     @id @default(autoincrement()) @db.UnsignedInt
+  nama_file     String? @db.VarChar(100)
+  instruktur_id Int?
+  tgl_laporan   String? @db.VarChar(50)
+
+  @@unique([tgl_laporan, instruktur_id])
+}
+
+model strata {
+  id          Int     @id @default(autoincrement()) @db.UnsignedInt
+  kode_strata String? @db.VarChar(10)
+  biaya       String? @db.VarChar(20)
+  prodi       prodi?
+}
+
+model form_turnitin {
+  id       Int  @id @default(autoincrement()) @db.UnsignedInt
+  users_id Int  @unique
+  tahap_1  Int?
+  tahap_2  Int?
+  tahap_3  Int?
+  tahap_4  Int?
+}
+
+enum users_status_akun {
+  aktif
+  non_aktif @map("non-aktif")
+  lulus
+}
+
+enum users_turnitin {
+  true
+  false
+}

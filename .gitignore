@@ -1,0 +1,3 @@
+node_modules
+.wwebjs_auth
+# Keep environment variables out of version control
