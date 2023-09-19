@@ -7,26 +7,33 @@ const multer = require('multer')
 const { loginValidation, registerValidaton } = require('../utils/utils')
 const { v4: uuidv4 } = require('uuid')
 
+const fs = require('fs'); // Add this require statement at the top of your file
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === 'photoProfile') {
-            cb(null, 'images/photoProfile')
+            cb(null, 'images/photoProfile');
         } else if (file.fieldname === 'buktiPembayaran') {
-            cb(null, 'images/buktiPembayaran')
+            const destinationDirectory = 'images/buktiPembayaran';
+            if (!fs.existsSync(destinationDirectory)) {
+                fs.mkdirSync(destinationDirectory, { recursive: true });
+            }
+            cb(null, destinationDirectory);
         } else if (file.fieldname === 'fileTurnitin') {
-            cb(null, 'files')
+            cb(null, 'files');
         }
     },
     filename: (req, file, cb) => {
         if (file.fieldname === 'fileTurnitin') {
             let extArray = file.mimetype.split("/");
             let extension = extArray[extArray.length - 1];
-            cb(null, uuidv4().substring(0, 9) + req.params.username + '-' + req.params.bab + '.' + extension)
+            cb(null, uuidv4().substring(0, 9) + req.params.username + '-' + req.params.bab + '.' + extension);
+        } else {
+            cb(null, uuidv4() + path.extname(file.originalname));
         }
-        else cb(null, uuidv4() + path.extname(file.originalname));
-
     }
-})
+});
+
 const upload = multer({ storage: storage });
 const auth = passport.authenticate('jwt', { session: false })
 
