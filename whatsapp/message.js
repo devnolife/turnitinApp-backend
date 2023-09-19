@@ -24,7 +24,7 @@ const activationMessage = (user) => {
     message += `Nama: ${user.nama} \n`;
     message += `Email: ${user.email} \n`;
     message += `No. HP: ${user.no_hp} \n`;
-    message += `\n*Telah diaktifkan silahkan login kembali di website Library Unismuh*`;
+    message += `\n*Telah diaktifkan silahkan login kembali di website Library Unismuh http://temanperpusmu.ac.id*`;
     return message;
 }
 
@@ -49,7 +49,7 @@ const changePassword = (data, password) => {
     message += `Username: ${data.username} \n`;
     message += `Email: ${data.email} \n`;
     message += `Password Terbaru: ${password} \n`;
-    message += `\n*Silahkan login kembali menggunakan password yang telah dirubah*`;
+    message += `\n*Silahkan login kembali menggunakan password yang telah dirubah , pada http://temanperpusmu.ac.id*`;
     message += `\n*Terima Kasih*`;
     return message;
 }
