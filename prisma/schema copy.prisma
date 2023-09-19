@@ -48,28 +48,32 @@ model users {
   @@unique([username, email, nim])
 }
 
-model prodi {
-  id          Int       @id @default(autoincrement()) @db.UnsignedInt
-  prodi       String?   @db.VarChar(255)
-  fakultas_id Int?
-  kode_prodi  Int?
-  kode_strata Int?      @unique
-  users       users[]
-  fakultas    fakultas? @relation(fields: [fakultas_id], references: [id])
-  strata      strata?   @relation(fields: [kode_strata], references: [id])
+model ability {
+  id      Int     @id @default(autoincrement()) @db.UnsignedInt
+  action  String? @db.VarChar(10)
+  subject String? @db.VarChar(10)
+  id_user Int     
+  users   users   @relation(fields: [id], references: [ability_id])
 }
+  model prodi {
+    id          Int       @id @default(autoincrement()) @db.UnsignedInt
+    prodi       String?   @db.VarChar(255)
+    fakultas_id Int?
+    kode_prodi  Int?
+    kode_strata Int?      @unique
+    users       users[]
+    fakultas    fakultas? @relation(fields: [fakultas_id], references: [id])
+    strata      strata?   @relation(fields: [kode_strata], references: [id])
+    has_bab_results prodi_has_bab_results?
+
+    turnitin turnitin[]
+
+  }
 
 model status_users {
   id     Int     @id @default(autoincrement()) @db.UnsignedInt
   status String? @db.VarChar(20)
   users  users[]
-}
-
-model ability {
-  id      Int     @id @default(autoincrement()) @db.UnsignedInt
-  action  String? @db.VarChar(10)
-  subject String? @db.VarChar(10)
-  users   users   @relation(fields: [id], references: [ability_id])
 }
 
 model images {
@@ -119,6 +123,8 @@ model turnitin {
   hasil              Int?             @db.TinyInt
   tutup              Int?             @db.TinyInt
   files              files?
+  prodi_id           Int?
+  prodi              prodi?           @relation(fields: [prodi_id], references: [id])
 }
 
 model files {
@@ -130,6 +136,11 @@ model files {
   bab_iv   String?   @db.VarChar(100)
   bab_v    String?   @db.VarChar(100)
   turnitin turnitin? @relation(fields: [users_id], references: [users_id])
+  bab1_hasil Int?    @db.TinyInt
+  bab2_hasil Int?    @db.TinyInt
+  bab3_hasil Int?    @db.TinyInt
+  bab4_hasil Int?    @db.TinyInt
+  bab5_hasil Int?    @db.TinyInt
 }
 
 model laporan {
@@ -151,10 +162,10 @@ model strata {
 model form_turnitin {
   id       Int  @id @default(autoincrement()) @db.UnsignedInt
   users_id Int  @unique
-  tahap_1  Int? @db.TinyInt
-  tahap_2  Int? @db.TinyInt
-  tahap_3  Int? @db.TinyInt
-  tahap_4  Int? @db.TinyInt
+  tahap_1  Int?
+  tahap_2  Int?
+  tahap_3  Int?
+  tahap_4  Int?
 }
 
 enum users_status_akun {
@@ -164,6 +175,11 @@ enum users_status_akun {
 }
 
 enum users_turnitin {
+  true
+  false
+}
+
+enum prodi_has_bab_results {
   true
   false
 }

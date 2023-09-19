@@ -64,6 +64,10 @@ router.post('/admin/create-instruktur', auth, adminController.crateInstrukturHan
 router.post('/admin/aktivasi-users', auth, adminController.aktivasiUsersHandler)
 router.delete('/admin/delete-users/:id', auth, adminController.deleteUsersHandler)
 router.post('/admin/send-message/:username', auth, adminController.messageServiceHandler)
+router.post('/admin/change-status-hasil/:id', auth, adminController.changeHasHasilTurnitinHandler)
+router.get('/admin/list-prodi', auth, adminController.listProdiHandler)
+router.get('/admin/list-biaya-turnitin', auth, adminController.listBiayaTurnitinHandler)
+router.post('/admin/edit-biaya-turnitin/:id', auth, adminController.editBiayaTurnitinHandler)
 
 //instruktur Routes
 router.get('/instruktur/list-users/:status', auth, instrukturController.listUsersByInstrukturHandler)
@@ -71,6 +75,7 @@ router.get('/instruktur/list-users-detail/:id', auth, instrukturController.userI
 router.get('/instruktur/time-line', auth, instrukturController.timeLineHandler)
 router.get('/instruktur/info-nilai/:id', auth, instrukturController.infoNilaiTurnitinHandler)
 router.post('/instruktur/update-nilai/:id', auth, instrukturController.updateNilaiTurntinHandler)
+router.post('/instruktur/update-hasil/:idUser', auth, instrukturController.updateHasilBabHandler)
 
 //common Routes
 router.get('/common/list-fakultas', commonController.ListFakultas)
@@ -79,6 +84,7 @@ router.get('/common/list-prodi/:fakultasId', commonController.ListProdiByFakulta
 router.get('/common/list-ujian', commonController.ListTahapUjian)
 router.get('/common/number-admin', commonController.AdminNumber)
 router.get('/common/info-nilai/:id', auth, commonController.NilaiTurnitin)
+router.get('/common/check-prodi/:idProdi/:idUser', commonController.CheckProdibabHandler)
 
 //images Routes
 router.post('/images/upload-profile', auth, profileFile, imagesController.UploadProfile)

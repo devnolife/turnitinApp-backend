@@ -9,12 +9,52 @@ const {
     usersDetailById,
     fiveUsersTimeLine,
     dataDashboard,
-    listUsersByInstruktur
+    listUsersByInstruktur,
+    changeHasHasilTurnitin,
+    listProdi,
+    editBiayaTurnitin,
+    listBiayaTurnitin
 } = require('../service/admin')
 
 const { messageByAdminService } = require('../service/whatsapp')
 const { roleValidations } = require('../validation/index')
 const { handleServerResponse } = require('../utils/utils')
+
+const editBiayaTurnitinHandler = roleValidations(1, async (req, res, next) => {
+    try {
+        const data = await editBiayaTurnitin(req.params.id, req.body.biaya)
+        return handleServerResponse(res, data.status, data.message, data.data)
+    } catch (err) {
+        next(err)
+    }
+})
+
+const listBiayaTurnitinHandler = roleValidations(1, async (req, res, next) => {
+    try {
+        const data = await listBiayaTurnitin()
+        return handleServerResponse(res, data.status, data.message, data.data)
+    } catch (err) {
+        next(err)
+    }
+})
+
+const listProdiHandler = roleValidations(1, async (req, res, next) => {
+    try {
+        const data = await listProdi()
+        return handleServerResponse(res, data.status, data.message, data.data)
+    } catch (err) {
+        next(err)
+    }
+})
+
+const changeHasHasilTurnitinHandler = roleValidations(1, async (req, res, next) => {
+    try {
+        const data = await changeHasHasilTurnitin(req.params.id, req.body.has_hasil_turnitin)
+        return handleServerResponse(res, data.status, data.message, data.data)
+    } catch (err) {
+        next(err)
+    }
+})
 
 const messageServiceHandler = roleValidations(1, async (req, res, next) => {
     try {
@@ -140,5 +180,9 @@ module.exports = {
     dataDashboardHandler,
     listUsersByInstrukturHandler,
     messageServiceHandler,
-    userTimeLineHandler
+    userTimeLineHandler,
+    changeHasHasilTurnitinHandler,
+    listProdiHandler,
+    editBiayaTurnitinHandler,
+    listBiayaTurnitinHandler
 }

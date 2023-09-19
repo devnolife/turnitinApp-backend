@@ -214,15 +214,24 @@ const createUser = async (_data, role, status, ability) => {
   }
 }
 
-const searchUser = async (username, email, nim) => {
+const searchUser = async ({ username, email, nim }) => {
   try {
+    const whereClause = [];
+
+    if (username) {
+      whereClause.push({ username: username });
+    }
+    if (email) {
+      whereClause.push({ email: email });
+    } 
+    if (nim) {
+      whereClause.push({ nim: nim });
+    }
+
+    
     const user = await prisma.users.findFirst({
       where: {
-        OR: [
-          { username: username },
-          { email: email },
-          { nim: nim }
-        ]
+        OR: whereClause
       },
       include: {
         ability: {
@@ -244,6 +253,7 @@ const searchUser = async (username, email, nim) => {
       }
     });
 
+
     if (user != null) {
       delete user.role_id
       delete user.status_id
@@ -263,6 +273,7 @@ const searchUser = async (username, email, nim) => {
     throw new Error(err.message);
   }
 }
+
 const searchUsers = async (username) => {
   try {
     const data = await prisma.users.findFirst({

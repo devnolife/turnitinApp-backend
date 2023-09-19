@@ -3,10 +3,16 @@ const {
     listProdiByFakultas,
     listTahapUjian,
     nilaiTurnitin,
-    timeMonthYearsUsers
+    timeMonthYearsUsers,
+    checkProdiBab
 } = require('../service/common')
 
 const { getNumberAdmin } = require('../tools')
+
+const CheckProdibabHandler = async (req, res) => {
+    const data = await checkProdiBab(req.params)
+    return res.status(data.status).send(data.data)
+}
 
 const TimeMonthYearsUsers = async (req, res) => {
     const data = await timeMonthYearsUsers()
@@ -47,5 +53,6 @@ module.exports = {
     ListTahapUjian,
     AdminNumber,
     NilaiTurnitin,
-    TimeMonthYearsUsers
+    TimeMonthYearsUsers,
+    CheckProdibabHandler
 }

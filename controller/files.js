@@ -54,14 +54,14 @@ const uplpoadFileTurnitinHandler = roleValidations(2, async (req, res, next) => 
     }
 })
 
-const infoFileUploadHandler = roleValidations(2, async (req, res, next) => {
+const infoFileUploadHandler = async (req, res, next) => {
     try {
         const data = await infoFileUpload(req.params.id)
         return handleServerResponse(res, data.status, data.message, data.data)
     } catch (err) {
         next(err)
     }
-})
+}
 
 
 const DownloadFile = async (req, res) => {

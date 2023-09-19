@@ -3,11 +3,21 @@ const {
     userInstrukturDetail,
     fiveUsersTimeLine,
     infoNilaiTurnitin,
-    updateNilaiTurntin
+    updateNilaiTurntin,
+    updateHasilBab
 } = require('../service/instruktur')
 const { roleValidations } = require('../validation/index')
 
 const { handleServerResponse } = require('../utils/utils')
+
+const updateHasilBabHandler = roleValidations(2, async (req, res, next) => {
+    try {
+        const data = await updateHasilBab(req.params.idUser, req.body)
+        return handleServerResponse(res, data.status, data.message, data.data)
+    }catch(err){
+        next(err)
+    }
+})
 
 const updateNilaiTurntinHandler = roleValidations(2, async (req, res, next) => {
     try {
@@ -60,5 +70,6 @@ module.exports = {
     userInstrukturDetailHandler,
     timeLineHandler,
     infoNilaiTurnitinHandler,
-    updateNilaiTurntinHandler
+    updateNilaiTurntinHandler,
+    updateHasilBabHandler
 }

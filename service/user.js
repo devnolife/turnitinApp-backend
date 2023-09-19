@@ -60,9 +60,9 @@ const updateUser = async (_data, users_id) => {
             },
             data: _data
         })
+
         return { status: 200, message: "", data: data }
     } catch (err) {
-        console.log("error", err)
         let error = handleError(err)
         return { status: error.status, message: error.message, data: null }
     }

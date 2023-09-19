@@ -155,10 +155,55 @@ const timeMonthYearsUsers = async () => {
     }
 }
 
+const checkProdiBab = async (params) => {
+    const { idProdi, idUser } = params
+    try {
+        const data = await prisma.prodi.findUnique({
+            where: {
+                id: Number(idProdi)
+            }, include: {
+                turnitin: {
+                    where: {
+                        users_id: Number(idUser)
+                    },
+                    select: {
+                        files: {
+                            select: {
+                                bab1_hasil: true,
+                                bab2_hasil: true,
+                                bab3_hasil: true,
+                                bab4_hasil: true,
+                                bab5_hasil: true,
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        delete data.fakultas_id
+        delete data.kode_prodi
+        delete data.kode_strata
+        data.turnitin = data.turnitin[0].files;
+        const babKeys = Object.keys(data.turnitin);
+        babKeys.forEach((key) => {
+            const babNumber = key.match(/\d+/)[0];
+            const babName = `BAB-${babNumber}`;
+            data.turnitin[babName] = data.turnitin[key];
+            delete data.turnitin[key];
+
+        });
+        return { status: 200, message: "list tahap ujian", data: data }
+    } catch (err) {
+        let error = handleError(err)
+        return { status: error.errorCode, message: error.message, data: null }
+    }
+}
+
 module.exports = {
     listFakultas,
     listProdiByFakultas,
     listTahapUjian,
     nilaiTurnitin,
-    timeMonthYearsUsers
+    timeMonthYearsUsers,
+    checkProdiBab
 }

@@ -5,18 +5,39 @@ const { generateHashedPassword } = require('../utils/utils')
 const { searchUser, phoneNumberFormatter } = require('../tools/index')
 const { userInlcude, detailUsers, detailUser, userInlcudeDetails, instrukturDetail, progressTurnitin } = require('../prisma/shortQuery')
 
-
-const editBiayaTurnitin = async (id , harga) => {
-    try{
-        await prisma.strata.update({
-            where:{
-                id: Number(id)
-            },
-            data:{
-                biaya : harga
+const listBiayaTurnitin = async () => {
+    try {
+        const data = await prisma.strata.findMany({
+            select: {
+                id: true,
+                kode_strata: true,
+                biaya: true
             }
         })
-    }catch(err){
+
+        data.map(item => {
+            item.kode_strata = (item.kode_strata).toUpperCase()
+        })
+        return { status: 200, message: "list biaya turnitin berhasil", data: data }
+    } catch (err) {
+        let error = handleError(err)
+        return { status: error.errorCode, message: error.message, data: null }
+    }
+}
+
+const editBiayaTurnitin = async (id, biaya) => {
+    try {
+        await prisma.strata.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                biaya: biaya
+            }
+        })
+
+        return { status: 200, message: "Edit biaya turnitin berhasil", data: null }
+    } catch (err) {
         let error = handleError(err)
         return { status: error.errorCode, message: error.message, data: null }
     }
@@ -82,8 +103,8 @@ const fiveUsersTimeLine = async () => {
 const createInstruktur = async (_data) => {
     try {
         const { username, email } = _data
-        const user = await searchUser(username, email)
-        if (!user) return { status: 400, message: "username atau email sudah digunakan", data: null }
+        const user = await searchUser({ username: username, email: email })
+        if (user) return { status: 400, message: "username atau email sudah digunakan", data: null }
         let data = await prisma.users.create({
             data: {
                 email: _data.email,
@@ -464,6 +485,63 @@ const dataDashboard = async () => {
         return { status: error.errorCode, message: error.message, data: null }
     }
 }
+
+const changeHasHasilTurnitin = async (idProdi, status) => {
+    try {
+        const update = await prisma.prodi.update({
+            where: {
+                id: Number(idProdi)
+            },
+            data: {
+                has_bab_results: status
+            }
+        })
+        return { status: 200, message: "update berhasil", data: update }
+    } catch (err) {
+        let error = handleError(err)
+        return { status: error.errorCode, message: error.message, data: null }
+    }
+}
+
+const listProdi = async () => {
+    try {
+        const data = await prisma.prodi.findMany({
+            where: {
+                NOT: {
+                    id: 0
+                }
+            },
+            select: {
+                id: true,
+                prodi: true,
+                has_bab_results: true,
+                fakultas: {
+                    select: {
+                        fakultas: true
+                    }
+                },
+                strata: {
+                    select: {
+                        kode_strata: true,
+                        biaya: true
+                    }
+                }
+            }
+        })
+
+        data.map(_data => {
+            _data['fakultas'] = _data['fakultas'].fakultas
+            _data['biaya'] = _data.strata?.biaya
+            _data['kode_strata'] = (_data.strata?.kode_strata).toUpperCase()
+            delete _data.strata
+        })
+        return { status: 200, message: "List Prodi Berhasil", data: data }
+    } catch (err) {
+        let error = handleError(err)
+        return { status: error.errorCode, message: error.message, data: null }
+
+    }
+}
 module.exports = {
     createInstruktur,
     listInstruktur,
@@ -475,5 +553,9 @@ module.exports = {
     usersDetailById,
     fiveUsersTimeLine,
     dataDashboard,
-    listUsersByInstruktur
+    listUsersByInstruktur,
+    changeHasHasilTurnitin,
+    listProdi,
+    listBiayaTurnitin,
+    editBiayaTurnitin
 }

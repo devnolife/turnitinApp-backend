@@ -46,6 +46,7 @@ const userInlcudeDetails = {
     prodi: {
         select: {
             prodi: true,
+            id: true,
             fakultas: {
                 select: {
                     fakultas: true
@@ -60,14 +61,12 @@ const userInlcudeDetails = {
 const deleteImportanData = (data) => {
     if (data.instruktur_id == 0) delete data.instruktur_id
     if (data.role_id === 1 || data.role_id === 2) {
-        delete data.prodi_id
         delete data.fakultas_id
         delete turnitin_status
         delete data.prodi
     }
     delete data.password
     delete data.role_id
-    delete data.prodi_id
     delete data.ability_id
     delete data.image
     delete data.turnitin

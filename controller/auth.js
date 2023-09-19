@@ -27,7 +27,7 @@ const register = async (req, res) => {
             };
         } else {
             await createUser(req.body, 3, 4, 3);
-            const newUser = await searchUser(username);
+            const newUser = await searchUser({ username: username });
             if (newUser) {
                 delete newUser.password;
                 return res.status(201).json({
@@ -58,7 +58,11 @@ const login = async (req, res) => {
     } else {
         const { username, password } = req.body;
         try {
-            const user = await searchUser(username);
+            const user = await searchUser({
+                username: username,
+                email: username,
+                nim: username
+            });
             if (!user) {
                 return handleServerResponse(res, 404, "Login Error, User tidak ditemukan", true, null);
             }
@@ -66,7 +70,7 @@ const login = async (req, res) => {
             if (!isPasswordMatch) {
                 return handleServerResponse(res, 403, "Password Salah", true, null);
             }
-            const token = jwt.sign({ username }, config.passport.secret, { expiresIn: 120 });
+            const token = jwt.sign({ username }, config.passport.secret, { expiresIn: 1000 });
             delete user.password;
             res.status(200).json({
                 userData: user,
@@ -132,9 +136,8 @@ const checkToken = async (req, res) => {
             });
         }
         const decodedToken = jwt.verify(token, config.passport.secret);
-        const currentTime =  Math.floor(Date.now() / 1000);
+        const currentTime = Math.floor(Date.now() / 1000);
         if (decodedToken.exp < currentTime) {
-            console.log("Token Expired");
             return res.status(200).json({
                 status: false,
                 message: "Token Expired"

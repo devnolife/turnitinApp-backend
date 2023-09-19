@@ -35,9 +35,16 @@ const infoFileUpload = async (userID) => {
         const data = await prisma.files.findUnique({
             where: {
                 users_id: Number(userID)
+            }, select: {
+                id: true,
+                users_id: true,
+                bab_i: true,
+                bab_ii: true,
+                bab_iii: true,
+                bab_iv: true,
+                bab_v: true
             }
         })
-
         if (data === null) {
             const data = []
             for (let i = 1; i <= 5; i++) {
@@ -65,7 +72,7 @@ const infoFileUpload = async (userID) => {
                 else returnData.push({ fieldName: data[item], status: true, label: item.toUpperCase().replace("_", "-"), params: item })
             })
             return {
-                status: 200, message: "berhasil file upload", data: {
+                status: 200, message: "Succes get info file", data: {
                     status: true,
                     data: returnData
                 }
@@ -86,6 +93,7 @@ const downloadFile = async (userID, bab) => {
         })
         if (data !== null) {
             const fileName = data[bab]
+
             return { status: 200, message: "download file berhasil", data: fileName }
         } else {
             return { status: 404, message: "File tidak ditemukan", data: null }

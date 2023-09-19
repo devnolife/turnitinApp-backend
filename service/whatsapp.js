@@ -87,7 +87,6 @@ const notificationRegistry = async (username) => {
                 response = "Notifikasi Berhasil Dikirim"
                 code = 200
             }).catch((err) => {
-                console.log(err, "error");
                 response = "Notifikasi Gagal Dikirim"
                 code = 500
             })

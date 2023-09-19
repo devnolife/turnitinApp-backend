@@ -5,7 +5,7 @@ const { searchUser } = require('../tools');
 const config = {
     passport: {
         secret: "perpusku",
-        expiresIn: 2000
+        expiresIn: 3600
     }
 }
 const applyPassportStrategy = (passport) => {

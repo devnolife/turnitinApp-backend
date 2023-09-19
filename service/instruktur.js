@@ -110,7 +110,6 @@ const listUsersByInstruktur = async (instruktur_id, status) => {
 }
 
 const userInstrukturDetail = async (instruktur_id, user_id) => {
-    console.log("🚀 ~ file: instruktur.js:113 ~ userInstrukturDetail ~ instruktur_id, user_id:", instruktur_id, user_id)
     try {
         const data = await prisma.users.findUnique({
             where: {
@@ -125,7 +124,6 @@ const userInstrukturDetail = async (instruktur_id, user_id) => {
         const user = await deleteImportanData(_data)
         return { status: 200, message: "", data: user }
     } catch (err) {
-        console.log(err);
         let error = handleError(err)
         return { status: error.status, message: error.message, data: null }
     }
@@ -173,6 +171,8 @@ const infoNilaiTurnitin = async (userID) => {
                 }
             })
         }
+
+        (data, 'data');
         return { status: 200, message: "", data: data }
     } catch (err) {
         let error = handleError(err)
@@ -204,11 +204,36 @@ const updateNilaiTurntin = async (turnitinID, data) => {
     }
 }
 
+const updateHasilBab = async (userId, data) => {
+    try {
+        await prisma.files.upsert({
+            where: {
+                users_id: Number(userId)
+            },
+            update: { ...data },
+            create: {
+                users_id: Number(userId),
+                ...data
+            }
+        })
+
+        return {
+            status: 200,
+            data: null,
+            message: 'Berhasil Update Hasil Perbab'
+        }
+    } catch (err) {
+        let error = handleError(err)
+        return { status: error.errorCode, message: error.message, data: null }
+    }
+}
+
 
 module.exports = {
     listUsersByInstruktur,
     userInstrukturDetail,
     fiveUsersTimeLine,
     infoNilaiTurnitin,
-    updateNilaiTurntin
+    updateNilaiTurntin,
+    updateHasilBab
 }
