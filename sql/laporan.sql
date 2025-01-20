@@ -20,4 +20,4 @@ left join proses_turnitin pt on t.id = pt.turnitin_id
 left join strata s on prodi.kode_strata = s.id
 left join images i on users.id = i.users_id
 where role_id = 3 and
-    month(tanggal_pembayaran) = 10  and year(tanggal_pembayaran) = 20
+    month(tanggal_pembayaran) = $1 and year(tanggal_pembayaran) = $2

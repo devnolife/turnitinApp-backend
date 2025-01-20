@@ -1,3 +1,4 @@
+  
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
@@ -7,7 +8,7 @@ const multer = require('multer')
 const { loginValidation, registerValidaton } = require('../utils/utils')
 const { v4: uuidv4 } = require('uuid')
 
-const fs = require('fs'); // Add this require statement at the top of your file
+const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

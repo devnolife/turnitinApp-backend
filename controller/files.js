@@ -75,14 +75,10 @@ const DownloadFile = async (req, res) => {
                 return res.status(500).send({ message: "Maaf terjadi kesalahan saat mengunduh file" })
             }
             res.setHeader('Content-Type', 'application/pdf')
-            res.setHeader('Content-Disposition', 'attachment; filename=' + data.data)
-            res.send({
-                file: file,
-                fileName: data.data
-            }).status(200)
+            res.setHeader('Content-Disposition', `attachment; filename="${data.data}"`);
+            res.status(200).end(file);
         })
     }
-
 }
 
 module.exports = {

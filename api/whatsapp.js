@@ -1,5 +1,5 @@
 const axios = require('axios');
-let urlDev = 'http://158.178.243.209:5000/whatsapp'
+let urlDev = 'https://whatsapp.devnolife.site'
 
 const checkNumber = async (number) => {
     try {

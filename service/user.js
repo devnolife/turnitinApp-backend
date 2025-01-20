@@ -140,12 +140,18 @@ const createTurnitin = async (_data, users_id) => {
         const data = await prisma.$transaction([updateNama, createTurnitin])
         return { status: 201, message: "", data: data }
     } catch (err) {
-        let error = handleError(err)
-        return { status: error.status, message: error.message, data: null }
+        console.log("🚀 ~ createTurnitin ~ err:", err)
+        let error = handleError(err);
+        return {
+            status: error?.errorCode || 500,
+            message: error?.message || 'An unexpected error occurred',
+            data: null
+        };
     }
 }
 
 const updateTurnitin = async (_data, users_id) => {
+    console.log("🚀 ~ updateTurnitin ~ _data:", _data)
     try {
         const data = await prisma.turnitin.update({
             where: {
@@ -155,6 +161,7 @@ const updateTurnitin = async (_data, users_id) => {
         })
         return { status: 200, message: "", data: data }
     } catch (err) {
+        console.log("🚀 ~ updateTurnitin ~ err:", err)
         let error = handleError(err)
         return { status: error.status, message: error.message, data: null }
     }

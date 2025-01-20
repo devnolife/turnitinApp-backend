@@ -123,7 +123,7 @@ model turnitin {
   hasil              Int?             @db.TinyInt
   tutup              Int?             @db.TinyInt
   files              files?
-  prodi_id           Int?
+  prodi_id           Int?            @default(0)
   prodi              prodi?           @relation(fields: [prodi_id], references: [id])
 }
 
