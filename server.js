@@ -8,7 +8,7 @@ const { applyPassportStrategy } = require('./auth/passport-jwt')
 const apiRouter = require('./router/index')
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient();
-
+const { handleError } = require('./error/index');
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({
@@ -41,3 +41,11 @@ app.use(passport.initialize());
         })
 })()
 
+// Global error handler middleware
+app.use((err, req, res, next) => {
+    const error = handleError(err);
+    res.status(error.errorCode || 500).json({
+        message: error.message || 'Internal Server Error',
+        serverError: error.serverError || null
+    });
+});

@@ -15,24 +15,27 @@ const { handleServerResponse } = require('../utils/utils')
 const { roleValidations } = require('../validation/index')
 
 
-const DownloadLaporan = async (req, res) => {
+const DownloadLaporan = async (req, res, next) => {
     const { id } = req.user
     if (id === undefined)
         return handleServerResponse(res, 401, "Maaf anda tidak memiliki akses untuk mengunduh laporan", null)
-    const data = await downloadLaporan(req.params)
-    if (data.status === 500) {
-        return handleServerResponse(res, data.status, data.message, data.data)
-    } else {
-        const directoryFile = path.join(__dirname, `../files/template/${data.data.fileName}`)
-        fs.readFile(directoryFile, (err, file) => {
-            if (err) {
-                return res.status(500).send({ message: "Maaf terjadi kesalahan saat mengunduh file" })
-            }
-            res.setHeader('Content-Type', 'application/vnd.ms-excel')
-            res.setHeader('Content-Disposition', 'attachment; filename=' + data.data.fileName)
-            res.send(file).status(200)
-        })
-
+    try {
+        const data = await downloadLaporan(req.params)
+        if (data.status === 500) {
+            return handleServerResponse(res, data.status, data.message, data.data)
+        } else {
+            const directoryFile = path.join(__dirname, `../files/template/${data.data.fileName}`)
+            fs.readFile(directoryFile, (err, file) => {
+                if (err) {
+                    return res.status(500).send({ message: "Maaf terjadi kesalahan saat mengunduh file" })
+                }
+                res.setHeader('Content-Type', 'application/vnd.ms-excel')
+                res.setHeader('Content-Disposition', 'attachment; filename=' + data.data.fileName)
+                res.send(file).status(200)
+            })
+        }
+    } catch (err) {
+        next(err)
     }
 }
 
@@ -64,25 +67,28 @@ const infoFileUploadHandler = async (req, res, next) => {
 }
 
 
-const DownloadFile = async (req, res) => {
-    const data = await downloadFile(req.user.id, req.params.bab)
-    if (data.status === 500) {
-        return handleServerResponse(res, data.status, data.message, data.data)
-    } else {
-        const directoryFile = path.join(__dirname, `../files/${data.data}`)
-        fs.readFile(directoryFile, (err, file) => {
-            if (err) {
-                return res.status(500).send({ message: "Maaf terjadi kesalahan saat mengunduh file" })
-            }
-            res.setHeader('Content-Type', 'application/pdf')
-            res.setHeader('Content-Disposition', 'attachment; filename=' + data.data)
-            res.send({
-                file: file,
-                fileName: data.data
-            }).status(200)
-        })
+const DownloadFile = async (req, res, next) => {
+    try {
+        const data = await downloadFile(req.user.id, req.params.bab)
+        if (data.status === 500) {
+            return handleServerResponse(res, data.status, data.message, data.data)
+        } else {
+            const directoryFile = path.join(__dirname, `../files/${data.data}`)
+            fs.readFile(directoryFile, (err, file) => {
+                if (err) {
+                    return res.status(500).send({ message: "Maaf terjadi kesalahan saat mengunduh file" })
+                }
+                res.setHeader('Content-Type', 'application/pdf')
+                res.setHeader('Content-Disposition', 'attachment; filename=' + data.data)
+                res.send({
+                    file: file,
+                    fileName: data.data
+                }).status(200)
+            })
+        }
+    } catch (err) {
+        next(err)
     }
-
 }
 
 module.exports = {
