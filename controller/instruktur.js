@@ -11,58 +11,34 @@ const { roleValidations } = require('../validation/index')
 const { handleServerResponse } = require('../utils/utils')
 
 const updateHasilBabHandler = roleValidations(2, async (req, res, next) => {
-    try {
-        const data = await updateHasilBab(req.params.idUser, req.body)
-        return handleServerResponse(res, data.status, data.message, data.data)
-    }catch(err){
-        next(err)
-    }
+    const data = await updateHasilBab(req.params.idUser, req.body)
+    return handleServerResponse(res, data.status, data.message, data.data)
 })
 
 const updateNilaiTurntinHandler = roleValidations(2, async (req, res, next) => {
-    try {
-        const data = await updateNilaiTurntin(req.params.id, req.body)
-        return handleServerResponse(res, data.status, data.message, data.data)
-    } catch (err) {
-        next(err)
-    }
+    const data = await updateNilaiTurntin(req.params.id, req.body)
+    return handleServerResponse(res, data.status, data.message, data.data)
 })
 
 const timeLineHandler = roleValidations(2, async (req, res, next) => {
-    try {
-        const data = await fiveUsersTimeLine(req.user.id)
-        return handleServerResponse(res, data.status, data.message, data.data)
-    } catch (err) {
-        next(err)
-    }
+    const data = await fiveUsersTimeLine(req.user.id)
+    return handleServerResponse(res, data.status, data.message, data.data)
 })
 
 const listUsersByInstrukturHandler = roleValidations(2, async (req, res, next) => {
-    try {
-        const data = await listUsersByInstruktur(req.user.id, req.params.status)
-        return handleServerResponse(res, data.status, data.message, data.data)
-    } catch (err) {
-        next(err)
-    }
+    const data = await listUsersByInstruktur(req.user.id, req.params.status)
+    return handleServerResponse(res, data.status, data.message, data.data)
 })
 
 const userInstrukturDetailHandler = roleValidations(2, async (req, res, next) => {
-    try {
-        const data = await userInstrukturDetail(req.user.id, req.params.id)
-        return handleServerResponse(res, data.status, data.message, data.data)
-    } catch (err) {
-        next(err)
-    }
+    const data = await userInstrukturDetail(req.user.id, req.params.id)
+    return handleServerResponse(res, data.status, data.message, data.data)
 })
 
 
 const infoNilaiTurnitinHandler = roleValidations(2, async (req, res, next) => {
-    try {
-        const data = await infoNilaiTurnitin(req.params.id)
-        return handleServerResponse(res, data.status, data.message, data.data)
-    } catch (err) {
-        next(err)
-    }
+    const data = await infoNilaiTurnitin(req.params.id)
+    return handleServerResponse(res, data.status, data.message, data.data)
 })
 
 module.exports = {

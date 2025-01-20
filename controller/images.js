@@ -5,19 +5,31 @@ const {
 } = require('../service/images')
 
 
-const UploadProfile = async (req, res) => {
-    const upload = await uploadProfile(req)
-    res.status(upload.status).send(upload.data)
+const UploadProfile = async (req, res, next) => {
+    try {
+        const upload = await uploadProfile(req)
+        res.status(upload.status).send(upload.data)
+    } catch (err) {
+        next(err)
+    }
 }
 
-const UploadBuktiBayar = async (req, res) => {
-    const upload = await uploadBuktiBayar(req)
-    res.status(upload.status).send(upload.data)
+const UploadBuktiBayar = async (req, res, next) => {
+    try {
+        const upload = await uploadBuktiBayar(req)
+        res.status(upload.status).send(upload.data)
+    } catch (err) {
+        next(err)
+    }
 }
 
-const ImageProfile = async (req, res) => {
-    const data = await imageProfile(req.user)
-    res.status(data.status).send(data.data)
+const ImageProfile = async (req, res, next) => {
+    try {
+        const data = await imageProfile(req.user)
+        res.status(data.status).send(data.data)
+    } catch (err) {
+        next(err)
+    }
 }
 
 module.exports = {
