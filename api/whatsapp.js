@@ -1,9 +1,5 @@
 const axios = require('axios');
-<<<<<<< HEAD
 let urlDev = 'https://whatsapp.devnolife.site'
-=======
-let urlDev = 'http:/213.35.111.95:5000/whatsapp'
->>>>>>> ed5bc49470bdcced3afc2246ecf6f13597603d35
 
 const checkNumber = async (number) => {
   try {
@@ -24,11 +20,6 @@ const sendMessages = async (number, message) => {
 }
 
 module.exports = {
-<<<<<<< HEAD
     checkNumber,
     sendMessages
-=======
-  checkNumber,
-  sendMessages
->>>>>>> ed5bc49470bdcced3afc2246ecf6f13597603d35
 }
