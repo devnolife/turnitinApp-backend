@@ -12,29 +12,45 @@ const {
     checkNumber
 } = require('../api/whatsapp')
 
-const ChangePasswordMessage = async (req, res) => {
+const ChangePasswordMessage = async (req, res, next) => {
     const { username } = req.params
-    const data = await changePasswordMessage(username)
-    res.status(data.status).send(data.data)
+    try {
+        const data = await changePasswordMessage(username)
+        res.status(data.status).send(data.data)
+    } catch (err) {
+        next(err)
+    }
 }
 
-const InstrukturMessage = async (req, res) => {
-    const data = await sendInstrukturMessage(req.user.id)
-    res.status(data.status).send(data.data)
+const InstrukturMessage = async (req, res, next) => {
+    try {
+        const data = await sendInstrukturMessage(req.user.id)
+        res.status(data.status).send(data.data)
+    } catch (err) {
+        next(err)
+    }
 }
 
-const sendNotificationActivation = async (req, res) => {
-    const data = await notificationActivation(req.params.username)
-    res.status(data.status).send(data.data)
+const sendNotificationActivation = async (req, res, next) => {
+    try {
+        const data = await notificationActivation(req.params.username)
+        res.status(data.status).send(data.data)
+    } catch (err) {
+        next(err)
+    }
 }
-const sendNotificationRegistry = async (req, res) => {
+
+const sendNotificationRegistry = async (req, res, next) => {
     const { username } = req.user;
-    const data = await notificationRegistry(username);
-    res.status(data.status).send(data.data)
+    try {
+        const data = await notificationRegistry(username);
+        res.status(data.status).send(data.data)
+    } catch (err) {
+        next(err)
+    }
 }
 
-
-const checkNomorWhatsapp = async (req, res) => {
+const checkNomorWhatsapp = async (req, res, next) => {
     const number = phoneNumberFormatter(req.body.no_hp);
 
     if (number.length < 10) {
@@ -45,13 +61,16 @@ const checkNomorWhatsapp = async (req, res) => {
         return;
     }
 
-    const data = await checkNumber(number);
-    res.status(data.code).json({
-        message: data.message,
-        data: data.data
-    });
+    try {
+        const data = await checkNumber(number);
+        res.status(data.code).json({
+            message: data.message,
+            data: data.data
+        });
+    } catch (err) {
+        next(err)
+    }
 };
-
 
 module.exports = {
     checkNomorWhatsapp,

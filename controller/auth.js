@@ -10,7 +10,7 @@ const {
 
 const { searchUser, createUser } = require('../tools/index')
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
   const errorAfterValidation = validationResult(req);
   if (!errorAfterValidation.isEmpty()) {
     return handleServerResponse(res, 400, "Register validation error", errorAfterValidation.array(), true);
@@ -44,14 +44,11 @@ const register = async (req, res) => {
       }
     }
   } catch (err) {
-    const { statusCode, message } = err;
-    return handleServerResponse(res, statusCode, message, null, err);
+    next(err);
   }
 };
 
-
-
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   const errorAfterValidation = validationResult(req);
   if (!errorAfterValidation.isEmpty()) {
     return handleServerResponse(res, 400, "Login validation error", errorAfterValidation.array());
@@ -78,13 +75,12 @@ const login = async (req, res) => {
       })
 
     } catch (err) {
-      console.log("ini erronya gan", err);
-      return handleServerResponse(res, 500, "Login Error", err.message, "server");
+      next(err);
     }
   }
 }
 
-const changePasswordUser = async (req, res) => {
+const changePasswordUser = async (req, res, next) => {
   const { currentPassword, newPassword } = req.body
   const { id } = req.user
   try {
@@ -123,12 +119,11 @@ const changePasswordUser = async (req, res) => {
     }
   }
   catch (err) {
-    const { statusCode, message } = err
-    return handleServerResponse(res, statusCode, message, null, err)
+    next(err);
   }
 }
 
-const checkToken = async (req, res) => {
+const checkToken = async (req, res, next) => {
   try {
     if (!token) {
       return res.status(400).json({
@@ -150,11 +145,7 @@ const checkToken = async (req, res) => {
       message: "Token Valid"
     });
   } catch (error) {
-    return res.status(500).json({
-
-      status: false,
-      message: "Internal Server Error"
-    });
+    next(error);
   }
 }
 
