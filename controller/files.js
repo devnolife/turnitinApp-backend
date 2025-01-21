@@ -67,22 +67,6 @@ const infoFileUploadHandler = async (req, res, next) => {
 }
 
 
-<<<<<<< HEAD
-const DownloadFile = async (req, res) => {
-    const data = await downloadFile(req.user.id, req.params.bab)
-    if (data.status === 500) {
-        return handleServerResponse(res, data.status, data.message, data.data)
-    } else {
-        const directoryFile = path.join(__dirname, `../files/${data.data}`)
-        fs.readFile(directoryFile, (err, file) => {
-            if (err) {
-                return res.status(500).send({ message: "Maaf terjadi kesalahan saat mengunduh file" })
-            }
-            res.setHeader('Content-Type', 'application/pdf')
-            res.setHeader('Content-Disposition', `attachment; filename="${data.data}"`);
-            res.status(200).end(file);
-        })
-=======
 const DownloadFile = async (req, res, next) => {
     try {
         const data = await downloadFile(req.user.id, req.params.bab)
@@ -104,7 +88,6 @@ const DownloadFile = async (req, res, next) => {
         }
     } catch (err) {
         next(err)
->>>>>>> ed5bc49470bdcced3afc2246ecf6f13597603d35
     }
 }
 
